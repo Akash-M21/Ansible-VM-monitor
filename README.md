@@ -22,7 +22,7 @@ The collected information is converted into a structured HTML report and deliver
 
 ## 🏗️ Architecture
 
-```
+```text
                  AWS EC2 Instances
                         |
                         |
