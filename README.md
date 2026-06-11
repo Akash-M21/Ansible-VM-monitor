@@ -89,7 +89,7 @@ After collecting the metrics, Ansible generates a health report and sends it thr
 ---
 ```
 # 📂 Project Structure
-
+```
 Ansible-VM-monitor/
 │
 ├── inventory/
@@ -107,7 +107,7 @@ Ansible-VM-monitor/
 │
 └── README.md
 
-````
+```
 
 ---
 
