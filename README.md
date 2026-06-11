@@ -23,10 +23,10 @@ This project automates server monitoring using Ansible by collecting:
 The collected information is converted into an HTML report and delivered through email.
 
 ---
-
+```
 # 🏗️ Architecture
 
-```
+
 
 ```
                  AWS EC2 Instances
