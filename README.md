@@ -1,24 +1,24 @@
-```markdown
-# Ansible VM Monitor with Email Notification
+````markdown
+# 🚀 Ansible VM Monitor with Email Notification
 
-An automated **VM monitoring and alerting solution** built using **Ansible**.
+An automated **VM health monitoring solution** built using **Ansible and AWS Dynamic Inventory**.
 
-This project connects to multiple Linux virtual machines using Ansible SSH-based automation, collects system health metrics, generates reports, and sends email notifications with the server status.
+This project dynamically discovers AWS EC2 instances based on tags, connects to them using SSH, collects system health metrics, generates reports, and sends email notifications with VM status details.
 
 ---
 
 # 📌 Project Overview
 
-In a DevOps environment, monitoring server health is essential to maintain system availability and identify issues before failures occur.
+In cloud environments, monitoring server health is essential for maintaining availability and preventing failures.
 
-This project automates VM health monitoring by collecting:
+This project automates VM monitoring using Ansible by collecting:
 
 - CPU utilization
 - Memory usage
 - Disk utilization
 - System uptime
-- Host information
-- Operating system details
+- Hostname details
+- Operating system information
 
 After collecting the metrics, Ansible generates a health report and sends it through email notification.
 
@@ -27,50 +27,52 @@ After collecting the metrics, Ansible generates a health report and sends it thr
 # 🏗️ Architecture
 
 ```
+                    AWS EC2 Instances
+                           |
+                           |
+              Tag Instances (Environment=dev)
+                           |
+                           |
+                 AWS Dynamic Inventory
+                           |
+                           |
+                 Ansible Control Node
+                           |
+                           |
+                    SSH Connection
+                           |
+        ---------------------------------------
+        |                  |                  |
+     VM-01              VM-02              VM-03
+     Linux              Linux              Linux
 
-```
-             +----------------+
-             | Ansible Control|
-             |      Node      |
-             +--------+-------+
-                      |
-                 SSH Access
-                      |
-    --------------------------------
-    |              |               |
+                           |
+                           |
+                Collect System Metrics
 
-+----+----+    +----+----+    +----+----+
-|  VM-01  |    |  VM-02  |    |  VM-03  |
-|  Linux  |    |  Linux  |    |  Linux  |
-+---------+    +---------+    +---------+
+                           |
+                           |
+                 Generate Health Report
 
-                      |
-             Collect Metrics
-
-          CPU | Memory | Disk | Uptime
-
-                      |
-             Generate Report
-
-                      |
-            Email Notification
-```
-
+                           |
+                           |
+                 Email Notification
 ```
 
 ---
 
 # ✨ Features
 
+✅ AWS EC2 Dynamic Inventory  
 ✅ Agentless monitoring using Ansible  
-✅ SSH-based remote execution  
+✅ SSH-based VM communication  
 ✅ Multiple VM monitoring support  
-✅ CPU monitoring  
-✅ Memory monitoring  
-✅ Disk monitoring  
-✅ Uptime monitoring  
+✅ CPU usage monitoring  
+✅ Memory utilization monitoring  
+✅ Disk usage monitoring  
+✅ System uptime monitoring  
 ✅ Automated health report generation  
-✅ Email notifications  
+✅ Email notification alerts  
 ✅ Cron-based scheduling support  
 
 ---
@@ -78,30 +80,38 @@ After collecting the metrics, Ansible generates a health report and sends it thr
 # 🛠️ Technologies Used
 
 | Technology | Purpose |
-|------------|---------|
-| Ansible | Automation and configuration management |
-| Linux | Target servers |
-| SSH | Secure communication |
-| YAML | Playbook configuration |
+|---|---|
+| Ansible | Automation and monitoring |
+| AWS EC2 | Virtual machines |
+| AWS CLI | EC2 management |
+| Dynamic Inventory | Automatic host discovery |
+| Python | AWS SDK support |
+| SSH | Secure connection |
 | SMTP | Email notification |
-| Cron | Scheduling |
+| Linux | Control and target machines |
 
 ---
-```
+
 # 📂 Project Structure
+
 ```
-Ansible-VM-monitor/
+Ansible-VM-Monitor/
+
 │
 ├── inventory/
-│   └── hosts
+│   └── aws_ec2.yaml
 │
 ├── playbooks/
-│   └── monitor.yml
+│   └── playbook.yaml
 │
 ├── templates/
 │   └── email_template.j2
 │
 ├── reports/
+│
+├── scripts/
+│   ├── tag_instances.sh
+│   └── copy_pubkey.sh
 │
 ├── ansible.cfg
 │
@@ -111,43 +121,27 @@ Ansible-VM-monitor/
 
 ---
 
-# 🔧 Prerequisites
+# ⚙️ Setup Instructions
 
-## Control Node Requirements
-
-- Linux machine
-- Python installed
-- Ansible installed
-- SSH access to target VMs
-
-
-Check Ansible installation:
+## Step 1: Update System
 
 ```bash
-ansible --version
-````
-
----
-
-# 📥 Installation
-
-## Clone Repository
-
-```bash
-git clone https://github.com/Akash-M21/Ansible-VM-monitor.git
-
-cd Ansible-VM-monitor
+sudo apt update && sudo apt upgrade -y
 ```
 
 ---
 
-## Install Ansible
+# Step 2: Install Ansible
 
-Ubuntu:
+Add Ansible repository:
 
 ```bash
-sudo apt update
+sudo add-apt-repository --yes --update ppa:ansible/ansible
+```
 
+Install Ansible:
+
+```bash
 sudo apt install ansible -y
 ```
 
@@ -159,118 +153,352 @@ ansible --version
 
 ---
 
-# 🔐 Configure SSH Access
+# Step 3: Install AWS CLI
 
-Generate SSH key:
+Download AWS CLI:
 
 ```bash
-ssh-keygen
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" \
+-o awscliv2.zip
 ```
 
-Copy SSH key to target VM:
+Install unzip:
 
 ```bash
-ssh-copy-id username@server-ip
+sudo apt install unzip -y
 ```
 
-Test SSH connection:
+Extract:
 
 ```bash
-ssh username@server-ip
+unzip awscliv2.zip
+```
+
+Install:
+
+```bash
+sudo ./aws/install
+```
+
+Verify:
+
+```bash
+aws --version
+```
+
+Configure AWS credentials:
+
+```bash
+aws configure
+```
+
+Provide:
+
+```
+AWS Access Key ID
+AWS Secret Access Key
+AWS Region
+Output Format
 ```
 
 ---
 
-# 📝 Configure Inventory
+# Step 4: Tag EC2 Instances
 
-Update:
+Create:
 
 ```
-inventory/hosts
+tag_instances.sh
 ```
 
-Example:
+Script:
 
-```ini
-[linux_servers]
-
-server1 ansible_host=10.0.1.10
-server2 ansible_host=10.0.1.11
-server3 ansible_host=10.0.1.12
+```bash
+#!/bin/bash
 
 
-[linux_servers:vars]
+instance_ids=$(aws ec2 describe-instances \
+--filters "Name=tag:Environment,Values=dev" \
+"Name=instance-state-name,Values=running" \
+--query 'Reservations[*].Instances[*].InstanceId' \
+--output text)
 
-ansible_user=ubuntu
-ansible_ssh_private_key_file=vm-key.pem
+
+sorted_ids=($(echo "$instance_ids" | tr '\t' '\n' | sort))
+
+
+counter=1
+
+for id in "${sorted_ids[@]}"
+do
+
+name="web-$(printf "%02d" $counter)"
+
+echo "Tagging $id as $name"
+
+
+aws ec2 create-tags \
+--resources "$id" \
+--tags Key=Name,Value="$name"
+
+
+((counter++))
+
+done
 ```
-
----
-
-# 🔍 Test Ansible Connectivity
 
 Run:
 
 ```bash
-ansible all -i inventory/hosts -m ping
+chmod +x tag_instances.sh
+
+./tag_instances.sh
 ```
-
-Expected output:
-
-```
-server1 | SUCCESS => pong
-
-server2 | SUCCESS => pong
-```
-
----
-
-# 📧 Email Notification Setup
-
-The project sends VM health reports through SMTP email.
-
-Configure SMTP details inside your variables/playbook.
 
 Example:
 
-```yaml
-smtp_server: smtp.gmail.com
-
-smtp_port: 587
-
-sender_email: monitoring@example.com
-
-receiver_email: admin@example.com
 ```
-
-For Gmail:
-
-1. Enable SMTP access
-2. Create an App Password
-3. Use the App Password in configuration
+web-01
+web-02
+web-03
+```
 
 ---
 
-# ▶️ Run Monitoring Playbook
+# Step 5: Configure Ansible
+
+Create:
+
+```
+ansible.cfg
+```
+
+Configuration:
+
+```ini
+[defaults]
+
+inventory = ./inventory/aws_ec2.yaml
+
+host_key_checking = False
+
+
+[ssh_connection]
+
+ssh_args = -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
+
+```
+
+---
+
+# Step 6: Configure AWS Dynamic Inventory
+
+Create:
+
+```
+inventory/aws_ec2.yaml
+```
+
+Content:
+
+```yaml
+plugin: amazon.aws.aws_ec2
+
+
+regions:
+
+  - ap-south-1
+
+
+filters:
+
+  tag:Environment: dev
+
+  instance-state-name: running
+
+
+compose:
+
+  ansible_host: public_ip_address
+
+
+keyed_groups:
+
+  - key: tags.Name
+    prefix: name
+
+
+  - key: tags.Environment
+    prefix: env
+
+```
+
+---
+
+# Step 7: Create Python Environment
+
+Install venv:
+
+```bash
+sudo apt install python3-venv -y
+```
+
+Create environment:
+
+```bash
+python3 -m venv ansible-env
+```
+
+Activate:
+
+```bash
+source ansible-env/bin/activate
+```
+
+Install packages:
+
+```bash
+pip install boto3 botocore docker
+```
+
+---
+
+# Step 8: Install AWS Ansible Collection
+
+```bash
+ansible-galaxy collection install amazon.aws
+```
+
+---
+
+# Step 9: Verify Dynamic Inventory
+
+Run:
+
+```bash
+ansible-inventory \
+-i inventory/aws_ec2.yaml \
+--graph
+```
+
+Example:
+
+```
+@all
+
+ |--web-01
+ |--web-02
+ |--web-03
+
+```
+
+---
+
+# Step 10: Configure SSH Access
+
+Copy public key to EC2 instances.
+
+Create:
+
+```
+copy_pubkey.sh
+```
+
+Script:
+
+```bash
+#!/bin/bash
+
+
+PEM_FILE="DevOps-Shack.pem"
+
+PUB_KEY=$(cat ~/.ssh/id_rsa.pub)
+
+USER="ubuntu"
+
+INVENTORY_FILE="inventory/aws_ec2.yaml"
+
+
+
+HOSTS=$(ansible-inventory \
+-i $INVENTORY_FILE \
+--list | jq -r '._meta.hostvars | keys[]')
+
+
+for HOST in $HOSTS
+
+do
+
+echo "Injecting key into $HOST"
+
+
+ssh \
+-o StrictHostKeyChecking=no \
+-i $PEM_FILE \
+$USER@$HOST "
+
+
+mkdir -p ~/.ssh &&
+
+echo \"$PUB_KEY\" >> ~/.ssh/authorized_keys &&
+
+chmod 700 ~/.ssh &&
+
+chmod 600 ~/.ssh/authorized_keys
+
+"
+
+done
+```
+
+Execute:
+
+```bash
+chmod +x copy_pubkey.sh
+
+./copy_pubkey.sh
+```
+
+---
+
+# Step 11: Test Ansible Connection
+
+```bash
+ansible all \
+-i inventory/aws_ec2.yaml \
+-m ping
+```
+
+Expected:
+
+```
+web-01 | SUCCESS => pong
+
+web-02 | SUCCESS => pong
+```
+
+---
+
+# Step 12: Run Monitoring Playbook
 
 Execute:
 
 ```bash
 ansible-playbook \
--i inventory/hosts \
-playbooks/monitor.yml
+-i inventory/aws_ec2.yaml \
+playbook.yaml
 ```
 
 ---
 
-# 📊 Sample Monitoring Output
+# 📊 Monitoring Report Example
 
 ```
-VM Health Monitoring Report
+VM Health Report
 
 
 Hostname:
-web-server-01
+web-01
 
 
 CPU Usage:
@@ -278,11 +506,11 @@ CPU Usage:
 
 
 Memory Usage:
-62%
+60%
 
 
 Disk Usage:
-48%
+45%
 
 
 Uptime:
@@ -292,139 +520,101 @@ Uptime:
 Status:
 Healthy
 
-
-Email Notification:
-Sent Successfully
 ```
 
 ---
 
-# 📬 Email Notification Example
+# 📧 Email Notification
 
-Subject:
+After monitoring completion, an email report is sent containing:
+
+- VM hostname
+- CPU utilization
+- Memory utilization
+- Disk usage
+- System health status
+
+
+Example Subject:
 
 ```
 VM Monitoring Report - Server Health Status
 ```
 
-Email Body:
-
-```
-Server Health Report
-
-
-Hostname:
-web-server-01
-
-
-CPU Usage:
-35%
-
-
-Memory Usage:
-62%
-
-
-Disk Usage:
-48%
-
-
-Uptime:
-15 days
-
-
-Server Status:
-Healthy
-
-
-Generated by Ansible VM Monitor
-```
-
 ---
 
-# ⏰ Schedule Monitoring using Cron
+# ⏰ Schedule Monitoring
 
-Edit cron:
+Use Cron:
 
 ```bash
 crontab -e
 ```
 
-Example: Run every hour
+Example:
+
+Run every hour:
 
 ```bash
-0 * * * * ansible-playbook -i inventory/hosts playbooks/monitor.yml
+0 * * * * ansible-playbook -i inventory/aws_ec2.yaml playbook.yaml
 ```
 
 ---
 
 # 🧪 Troubleshooting
 
-## SSH Connection Failed
+## SSH Permission Error
 
-Check:
-
-```bash
-ssh username@server-ip
-```
-
-Verify:
-
-* SSH key
-* Username
-* IP address
-* Security group rules
-
-Fix private key permission:
+Fix:
 
 ```bash
-chmod 400 vm-key.pem
+chmod 400 key.pem
 ```
 
 ---
 
-## Ansible Host Unreachable
-
-Test:
-
-```bash
-ansible all -i inventory/hosts -m ping
-```
+## Host Unreachable
 
 Check:
 
-* Inventory configuration
-* Network connectivity
-* Firewall rules
+```bash
+ansible all -i inventory/aws_ec2.yaml -m ping
+```
+
+Verify:
+
+- Security group rules
+- SSH key
+- Instance IP
+- Username
 
 ---
 
 ## Email Not Received
 
-Verify:
+Check:
 
-* SMTP server
-* SMTP port
-* Email credentials
-* App password configuration
+- SMTP configuration
+- Email credentials
+- Firewall rules
+- SMTP port
 
 ---
 
 # 🚀 Future Enhancements
 
-* Slack notifications
-* Microsoft Teams alerts
-* Prometheus integration
-* Grafana dashboards
-* Alert threshold configuration
-* Auto remediation using Ansible
+- Slack notifications
+- Microsoft Teams alerts
+- Prometheus integration
+- Grafana dashboards
+- Auto remediation
+- CPU/Disk threshold alerts
+- Kubernetes monitoring
 
 ---
 
-# 🎯 Use Cases
+# 📌 Repository
 
-* DevOps infrastructure monitoring
-* Cloud VM health checks
-* Automated server reporting
-* Production server monitoring
-* Ansible automation practice
+GitHub:
+
+https://github.com/Akash-M21/Ansible-VM-Monitor
