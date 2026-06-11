@@ -44,8 +44,6 @@ After collecting the metrics, Ansible generates a health report and sends it thr
 |  Linux  |    |  Linux  |    |  Linux  |
 +---------+    +---------+    +---------+
 
-```
-```
                       |
              Collect Metrics
 
@@ -432,6 +430,3 @@ Verify:
 * Automated server reporting
 * Production server monitoring
 * Ansible automation practice
-
----render cleanly on GitHub and looks like a real DevOps project README.
-```
