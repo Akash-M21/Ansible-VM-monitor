@@ -69,7 +69,6 @@ The collected information is converted into an HTML report and delivered through
 
 ```
 
----
 
 # ✨ Features
 
@@ -100,7 +99,6 @@ The collected information is converted into an HTML report and delivered through
 | SMTP | Email notification |
 | YAML | Configuration |
 
----
 ```
 
 # 📂 Project Structure
@@ -577,6 +575,3 @@ Verify:
 GitHub:
 
 [https://github.com/Akash-M21/Ansible-VM-Monitor](https://github.com/Akash-M21/Ansible-VM-Monitor)
-
-This version now matches your repository exactly.
-```
