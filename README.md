@@ -99,6 +99,7 @@ The collected information is converted into an HTML report and delivered through
 | SMTP | Email notification |
 | YAML | Configuration |
 
+---
 ```
 
 # 📂 Project Structure
