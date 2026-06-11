@@ -6,7 +6,7 @@ An automated **VM health monitoring solution** built using **Ansible, AWS Dynami
 This project dynamically discovers AWS EC2 instances using tags, collects server health metrics, generates an HTML-based monitoring report, and sends the report through email notifications.
 
 ---
-
+```
 ## 📑 Table of Contents
 
 * [Project Overview](#project-overview)
@@ -36,7 +36,7 @@ Monitoring VM health is an important part of infrastructure operations. This pro
 The collected information is converted into a structured HTML report and delivered through email.
 
 ---
-
+```
 ## 🏗️ Architecture
 
 ```text
