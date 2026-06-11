@@ -91,7 +91,7 @@ After collecting the metrics, Ansible generates a health report and sends it thr
 | Linux | Control and target machines |
 
 ---
-
+```
 # 📂 Project Structure
 
 ```
