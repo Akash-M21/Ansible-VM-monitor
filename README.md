@@ -87,10 +87,9 @@ After collecting the metrics, Ansible generates a health report and sends it thr
 | Cron | Scheduling |
 
 ---
-
+```
 # 📂 Project Structure
 
-```
 
 Ansible-VM-monitor/
 │
