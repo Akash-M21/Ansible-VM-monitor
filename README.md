@@ -1,7 +1,5 @@
-Here is a polished **final README.md** suitable for your GitHub repository. It presents the project as a complete **DevOps automation + monitoring + email alerting solution**.
-
 ```markdown
-# Ansible VM Monitor with Email Notification 🚀
+# Ansible VM Monitor with Email Notification 
 
 An automated VM monitoring solution built using **Ansible** that collects Linux server health metrics and sends detailed **email notifications** with system status reports.
 
