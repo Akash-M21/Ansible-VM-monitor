@@ -1,15 +1,15 @@
 ```markdown
-# Ansible VM Monitor with Email Notification 
+# Ansible VM Monitor with Email Notification
 
-An automated VM monitoring solution built using **Ansible** that collects Linux server health metrics and sends detailed **email notifications** with system status reports.
+An automated **VM monitoring and alerting solution** built using **Ansible**.
 
-This project uses Ansible's agentless architecture to remotely connect to multiple virtual machines through SSH, gather system information, generate monitoring reports, and notify administrators through email.
+This project connects to multiple Linux virtual machines using Ansible SSH-based automation, collects system health metrics, generates reports, and sends email notifications with the server status.
 
 ---
 
-## 📌 Project Overview
+# 📌 Project Overview
 
-In a real-world DevOps environment, monitoring server health is critical to maintain availability and prevent failures.
+In a DevOps environment, monitoring server health is essential to maintain system availability and identify issues before failures occur.
 
 This project automates VM health monitoring by collecting:
 
@@ -20,7 +20,7 @@ This project automates VM health monitoring by collecting:
 - Host information
 - Operating system details
 
-After collecting metrics, Ansible generates a health report and sends it through email notification.
+After collecting the metrics, Ansible generates a health report and sends it through email notification.
 
 ---
 
@@ -29,35 +29,33 @@ After collecting metrics, Ansible generates a health report and sends it through
 ```
 
 ```
-                 +----------------+
-                 | Ansible Control |
-                 |      Node      |
-                 +--------+-------+
-                          |
-                          |
-                       SSH Access
-                          |
-    ---------------------------------------------
-    |                    |                      |
-```
+             +----------------+
+             | Ansible Control|
+             |      Node      |
+             +--------+-------+
+                      |
+                 SSH Access
+                      |
+    --------------------------------
+    |              |               |
 
-+----+----+          +----+----+            +----+----+
-| VM-01   |          | VM-02   |            | VM-03   |
-| Linux   |          | Linux   |            | Linux   |
-+---------+          +---------+            +---------+
++----+----+    +----+----+    +----+----+
+|  VM-01  |    |  VM-02  |    |  VM-03  |
+|  Linux  |    |  Linux  |    |  Linux  |
++---------+    +---------+    +---------+
 
 ```
-                          |
-                          |
-                Collect Server Metrics
+```
+                      |
+             Collect Metrics
 
-                          |
-                          |
-                Generate Health Report
+          CPU | Memory | Disk | Uptime
 
-                          |
-                          |
-                Email Notification
+                      |
+             Generate Report
+
+                      |
+            Email Notification
 ```
 
 ```
@@ -68,14 +66,14 @@ After collecting metrics, Ansible generates a health report and sends it through
 
 ✅ Agentless monitoring using Ansible  
 ✅ SSH-based remote execution  
-✅ Supports multiple Linux VMs  
+✅ Multiple VM monitoring support  
 ✅ CPU monitoring  
 ✅ Memory monitoring  
-✅ Disk usage monitoring  
-✅ System uptime monitoring  
+✅ Disk monitoring  
+✅ Uptime monitoring  
 ✅ Automated health report generation  
-✅ Email alert notifications  
-✅ Easy scheduling using Cron jobs  
+✅ Email notifications  
+✅ Cron-based scheduling support  
 
 ---
 
@@ -83,12 +81,12 @@ After collecting metrics, Ansible generates a health report and sends it through
 
 | Technology | Purpose |
 |------------|---------|
-| Ansible | Automation & configuration management |
-| Linux | Target operating systems |
-| SSH | Secure remote communication |
+| Ansible | Automation and configuration management |
+| Linux | Target servers |
+| SSH | Secure communication |
 | YAML | Playbook configuration |
-| SMTP | Email notifications |
-| Cron | Scheduled monitoring |
+| SMTP | Email notification |
+| Cron | Scheduling |
 
 ---
 
@@ -97,7 +95,6 @@ After collecting metrics, Ansible generates a health report and sends it through
 ```
 
 Ansible-VM-monitor/
-
 │
 ├── inventory/
 │   └── hosts
@@ -120,9 +117,7 @@ Ansible-VM-monitor/
 
 # 🔧 Prerequisites
 
-## Ansible Control Node
-
-Requirements:
+## Control Node Requirements
 
 - Linux machine
 - Python installed
@@ -130,7 +125,7 @@ Requirements:
 - SSH access to target VMs
 
 
-Check Ansible:
+Check Ansible installation:
 
 ```bash
 ansible --version
@@ -140,7 +135,7 @@ ansible --version
 
 # 📥 Installation
 
-## 1. Clone Repository
+## Clone Repository
 
 ```bash
 git clone https://github.com/Akash-M21/Ansible-VM-monitor.git
@@ -150,7 +145,7 @@ cd Ansible-VM-monitor
 
 ---
 
-## 2. Install Ansible
+## Install Ansible
 
 Ubuntu:
 
@@ -176,13 +171,13 @@ Generate SSH key:
 ssh-keygen
 ```
 
-Copy SSH key to target servers:
+Copy SSH key to target VM:
 
 ```bash
 ssh-copy-id username@server-ip
 ```
 
-Test connection:
+Test SSH connection:
 
 ```bash
 ssh username@server-ip
@@ -192,7 +187,7 @@ ssh username@server-ip
 
 # 📝 Configure Inventory
 
-Update inventory file:
+Update:
 
 ```
 inventory/hosts
@@ -205,13 +200,13 @@ Example:
 
 server1 ansible_host=10.0.1.10
 server2 ansible_host=10.0.1.11
+server3 ansible_host=10.0.1.12
 
 
 [linux_servers:vars]
 
 ansible_user=ubuntu
 ansible_ssh_private_key_file=vm-key.pem
-
 ```
 
 ---
@@ -230,16 +225,15 @@ Expected output:
 server1 | SUCCESS => pong
 
 server2 | SUCCESS => pong
-
 ```
 
 ---
 
-# 📧 Email Notification Configuration
+# 📧 Email Notification Setup
 
-The project sends VM health reports through email using SMTP.
+The project sends VM health reports through SMTP email.
 
-Configure SMTP details:
+Configure SMTP details inside your variables/playbook.
 
 Example:
 
@@ -251,14 +245,13 @@ smtp_port: 587
 sender_email: monitoring@example.com
 
 receiver_email: admin@example.com
-
 ```
 
 For Gmail:
 
-* Enable SMTP access
-* Create an App Password
-* Use App Password instead of account password
+1. Enable SMTP access
+2. Create an App Password
+3. Use the App Password in configuration
 
 ---
 
@@ -274,7 +267,7 @@ playbooks/monitor.yml
 
 ---
 
-# 📊 Sample Monitoring Report
+# 📊 Sample Monitoring Output
 
 ```
 VM Health Monitoring Report
@@ -306,14 +299,13 @@ Healthy
 
 Email Notification:
 Sent Successfully
-
 ```
 
 ---
 
-# 📬 Email Alert Example
+# 📬 Email Notification Example
 
-Email Subject:
+Subject:
 
 ```
 VM Monitoring Report - Server Health Status
@@ -350,14 +342,11 @@ Healthy
 
 
 Generated by Ansible VM Monitor
-
 ```
 
 ---
 
-# ⏰ Schedule Monitoring Automatically
-
-Using Cron:
+# ⏰ Schedule Monitoring using Cron
 
 Edit cron:
 
@@ -365,9 +354,7 @@ Edit cron:
 crontab -e
 ```
 
-Example:
-
-Run monitoring every hour:
+Example: Run every hour
 
 ```bash
 0 * * * * ansible-playbook -i inventory/hosts playbooks/monitor.yml
@@ -377,7 +364,7 @@ Run monitoring every hour:
 
 # 🧪 Troubleshooting
 
-## SSH Connection Issue
+## SSH Connection Failed
 
 Check:
 
@@ -389,7 +376,7 @@ Verify:
 
 * SSH key
 * Username
-* Server IP
+* IP address
 * Security group rules
 
 Fix private key permission:
@@ -402,7 +389,7 @@ chmod 400 vm-key.pem
 
 ## Ansible Host Unreachable
 
-Run:
+Test:
 
 ```bash
 ansible all -i inventory/hosts -m ping
@@ -420,7 +407,7 @@ Check:
 
 Verify:
 
-* SMTP server details
+* SMTP server
 * SMTP port
 * Email credentials
 * App password configuration
@@ -429,13 +416,12 @@ Verify:
 
 # 🚀 Future Enhancements
 
-* Slack notification integration
+* Slack notifications
 * Microsoft Teams alerts
 * Prometheus integration
-* Grafana dashboard
-* Auto remediation using Ansible
-* Kubernetes cluster monitoring
+* Grafana dashboards
 * Alert threshold configuration
+* Auto remediation using Ansible
 
 ---
 
@@ -444,5 +430,8 @@ Verify:
 * DevOps infrastructure monitoring
 * Cloud VM health checks
 * Automated server reporting
-* Production environment monitoring
-* Learning Ansible automation
+* Production server monitoring
+* Ansible automation practice
+
+---render cleanly on GitHub and looks like a real DevOps project README.
+```
