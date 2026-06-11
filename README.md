@@ -22,7 +22,7 @@ The collected information is converted into a structured HTML report and deliver
 
 ## 🏗️ Architecture
 
-```text
+```
                  AWS EC2 Instances
                         |
                         |
@@ -150,7 +150,7 @@ aws configure
 ```
 
 *Provide your AWS Access Key ID, Secret Access Key, Region, and preferred Output Format.*
-
+```
 ### Step 4: Configure EC2 Tags
 
 The project relies on AWS tags for dynamic discovery. Ensure your target EC2 instances have the appropriate tags.
