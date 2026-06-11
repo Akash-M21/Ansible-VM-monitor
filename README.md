@@ -410,7 +410,7 @@ Script:
 #!/bin/bash
 
 
-PEM_FILE="DevOps-Shack.pem"
+PEM_FILE="Ansible-demo.pem"
 
 PUB_KEY=$(cat ~/.ssh/id_rsa.pub)
 
