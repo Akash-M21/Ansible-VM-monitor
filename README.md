@@ -9,16 +9,17 @@ This project dynamically discovers AWS EC2 instances using tags, collects server
 
 ## 📑 Table of Contents
 
-* [Project Overview](#-project-overview)
-* [Architecture](#-architecture)
-* [Features](#-features)
-* [Technologies Used](#-technologies-used)
-* [Project Structure](#-project-structure)
-* [Setup Instructions](#️-setup-instructions)
-* [Running the Project](#️-running-the-project)
-* [Sample Monitoring Report](#-sample-monitoring-report)
-* [Troubleshooting](#-troubleshooting)
-* [Future Enhancements](#-future-enhancements)
+* [Project Overview](#project-overview)
+* [Architecture](#architecture)
+* [Features](#features)
+* [Technologies Used](#technologies-used)
+* [Project Structure](#project-structure)
+* [Setup Instructions](#setup-instructions)
+* [Running the Project](#running-the-project)
+* [Sample Monitoring Report](#sample-monitoring-report)
+* [Troubleshooting](#troubleshooting)
+* [Future Enhancements](#future-enhancements)
+
 ---
 
 ## 📌 Project Overview
