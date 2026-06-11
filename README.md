@@ -1,115 +1,89 @@
 ```markdown
-# Ansible VM Monitor with Email Notification
-
 An automated **VM health monitoring solution** built using **Ansible, AWS Dynamic Inventory, and Email Notification**.
 
-This project dynamically discovers AWS EC2 instances using tags, collects server health metrics, generates an HTML-based monitoring report, and sends the report through email notification.
+This project dynamically discovers AWS EC2 instances using tags, collects server health metrics, generates an HTML-based monitoring report, and sends the report through email notifications.
 
 ---
 
-# 📌 Project Overview
+## 📌 Project Overview
 
-Monitoring VM health is an important part of infrastructure operations.
+Monitoring VM health is an important part of infrastructure operations. This project automates server monitoring using Ansible by collecting:
 
-This project automates server monitoring using Ansible by collecting:
+* **CPU utilization**
+* **Memory usage**
+* **Disk utilization**
+* **Hostname information**
+* **Operating system details**
+* **System uptime**
 
-- CPU utilization
-- Memory usage
-- Disk utilization
-- Hostname information
-- Operating system details
-- System uptime
-
-The collected information is converted into an HTML report and delivered through email.
+The collected information is converted into a structured HTML report and delivered straight to your inbox.
 
 ---
-```
-# 🏗️ Architecture
 
+## 🏗️ Architecture
 
-
-```
+```text
                  AWS EC2 Instances
                         |
                         |
           Dynamic Inventory Discovery
           (inventory/aws_ec2.yaml)
-
                         |
                         |
-
               Ansible Control Node
-
                         |
                         |
-
-                playbook.yaml
-
+                  playbook.yaml
                         |
           -----------------------------
           |                           |
-
-  collect_metrics.yaml          send_report.yaml
-
+ collect_metrics.yaml           send_report.yaml
           |
           |
-
-    Collect VM Health Data
-
+  Collect VM Health Data
           |
           |
-
  Generate HTML Report
-
           |
           |
-
- Email Notification
-```
-
-```
-# ✨ Features
-
-✅ AWS EC2 Dynamic Inventory  
-✅ Agentless monitoring using Ansible  
-✅ SSH-based VM communication  
-✅ Automatic EC2 instance discovery  
-✅ CPU monitoring  
-✅ Memory monitoring  
-✅ Disk monitoring  
-✅ Uptime monitoring  
-✅ HTML email report generation  
-✅ Automated email notifications  
-✅ Easy configuration using Ansible variables
+  Email Notification
 
 ```
 
-```
-# 🛠️ Technologies Used
+---
+
+## ✨ Features
+
+* ✅ **AWS EC2 Dynamic Inventory**
+* ✅ **Agentless monitoring** using Ansible
+* ✅ **SSH-based** VM communication
+* ✅ **Automatic EC2 instance discovery** based on tags
+* ✅ **Resource Monitoring:** CPU, Memory, Disk, and Uptime
+* ✅ **HTML email report generation**
+* ✅ **Automated email notifications**
+* ✅ **Easy configuration** using Ansible variables
+
+---
+
+## 🛠️ Technologies Used
 
 | Technology | Purpose |
-|------------|---------|
-| Ansible | Automation and configuration management |
-| AWS EC2 | Virtual machines |
-| AWS CLI | AWS resource management |
-| Dynamic Inventory | Automatic host discovery |
-| Python boto3 | AWS API communication |
-| SSH | Remote server access |
-| SMTP | Email notification |
-| YAML | Configuration management |
+| --- | --- |
+| **Ansible** | Automation and configuration management |
+| **AWS EC2** | Virtual machines |
+| **AWS CLI** | AWS resource management |
+| **Dynamic Inventory** | Automatic host discovery |
+| **Python / boto3** | AWS API communication |
+| **SSH** | Remote server access |
+| **SMTP** | Email notification |
+| **YAML** | Configuration management |
 
-```
+---
 
+## 📂 Project Structure
 
-
-```
-
-# 📂 Project Structure
-
-```
-
+```text
 Ansible-VM-Monitor/
-
 │
 ├── group_vars/
 │   └── all.yaml
@@ -121,460 +95,265 @@ Ansible-VM-Monitor/
 │   └── report_email_animated.html.j2
 │
 ├── ansible.cfg
-│
 ├── collect_metrics.yaml
-│
 ├── playbook.yaml
-│
 ├── send_report.yaml
-│
 └── README.md
 
 ```
 
 ---
 
-# ⚙️ Setup Instructions
+## ⚙️ Setup Instructions
 
-## Step 1: Update System
+### Step 1: Update System
 
 ```bash
 sudo apt update && sudo apt upgrade -y
+
 ```
 
----
+### Step 2: Install Ansible
 
-# Step 2: Install Ansible
-
-Add Ansible repository:
+Add the Ansible repository and install:
 
 ```bash
 sudo add-apt-repository --yes --update ppa:ansible/ansible
-```
-
-Install Ansible:
-
-```bash
 sudo apt install ansible -y
+
 ```
 
-Verify:
+Verify installation:
 
 ```bash
 ansible --version
+
 ```
 
----
+### Step 3: Install & Configure AWS CLI
 
-# Step 3: Install AWS CLI
-
-Download AWS CLI:
+Download and install the AWS CLI:
 
 ```bash
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" \
--o awscliv2.zip
-```
-
-Install unzip:
-
-```bash
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o awscliv2.zip
 sudo apt install unzip -y
-```
-
-Extract:
-
-```bash
 unzip awscliv2.zip
-```
-
-Install:
-
-```bash
 sudo ./aws/install
+
 ```
 
-Verify:
-
-```bash
-aws --version
-```
-
-Configure AWS:
+Configure your AWS credentials:
 
 ```bash
 aws configure
-```
-
-Provide:
 
 ```
-AWS Access Key ID
-AWS Secret Access Key
-AWS Region
-Output Format
-```
 
----
+*Provide your AWS Access Key ID, Secret Access Key, Region, and preferred Output Format.*
 
-# Step 4: Configure EC2 Tags
+### Step 4: Configure EC2 Tags
 
-The project uses AWS tags for dynamic discovery.
+The project relies on AWS tags for dynamic discovery. Ensure your target EC2 instances have the appropriate tags.
+**Example:** `Environment = dev`
+*(Only running EC2 instances with this tag will be monitored.)*
 
-Example:
+### Step 5: Configure Ansible Inventory
 
-```
-Environment = dev
-```
-
-Only running EC2 instances with this tag will be monitored.
-
----
-
-# Step 5: Configure Ansible Inventory
-
-File:
-
-```
-inventory/aws_ec2.yaml
-```
-
-Example:
+Edit `inventory/aws_ec2.yaml`:
 
 ```yaml
 plugin: amazon.aws.aws_ec2
 
-
 regions:
-
   - ap-south-1
 
-
 filters:
-
   tag:Environment: dev
-
   instance-state-name: running
 
-
 compose:
-
   ansible_host: public_ip_address
 
-
 keyed_groups:
-
   - key: tags.Name
     prefix: name
-
-
   - key: tags.Environment
     prefix: env
 
 ```
 
----
+### Step 6: Configure Ansible Settings
 
-# Step 6: Configure Ansible
-
-File:
-
-```
-ansible.cfg
-```
-
-Configuration:
+Edit `ansible.cfg`:
 
 ```ini
 [defaults]
-
 inventory = ./inventory/aws_ec2.yaml
-
 host_key_checking = False
 
-
 [ssh_connection]
-
 ssh_args = -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
 
 ```
 
----
+### Step 7: Create Python Environment
 
-# Step 7: Create Python Environment
-
-Install venv:
+Create and activate a virtual environment, then install dependencies:
 
 ```bash
 sudo apt install python3-venv -y
-```
-
-Create environment:
-
-```bash
 python3 -m venv ansible-env
-```
-
-Activate:
-
-```bash
 source ansible-env/bin/activate
-```
-
-Install dependencies:
-
-```bash
 pip install boto3 botocore docker
+
 ```
 
----
-
-# Step 8: Install AWS Ansible Collection
+### Step 8: Install AWS Ansible Collection
 
 ```bash
 ansible-galaxy collection install amazon.aws
+
 ```
 
----
+### Step 9: Verify Dynamic Inventory
 
-# Step 9: Verify Dynamic Inventory
-
-Run:
+Check if Ansible successfully discovers your AWS instances:
 
 ```bash
-ansible-inventory \
--i inventory/aws_ec2.yaml \
---graph
-```
-
-Example:
+ansible-inventory -i inventory/aws_ec2.yaml --graph
 
 ```
+
+*Expected Output Example:*
+
+```text
 @all
-
  |--web-01
  |--web-02
  |--web-03
 
 ```
 
----
+### Step 10: Configure SSH Access
 
-# Step 10: Configure SSH Access
-
-Ensure Ansible Control Node can connect to EC2 instances.
-
-Test:
-
-```bash
-ssh ubuntu@server-ip
-```
-
-Fix key permission:
+Ensure the Ansible Control Node can communicate with the EC2 instances.
+Fix your key permissions and test the connection:
 
 ```bash
 chmod 400 key.pem
-```
-
----
-
-# Step 11: Configure Email Variables
-
-Update:
+ssh -i key.pem ubuntu@<server-ip>
 
 ```
-group_vars/all.yaml
-```
 
-Example:
+### Step 11: Configure Email Variables
+
+Update `group_vars/all.yaml` with your SMTP details:
 
 ```yaml
 smtp_server: smtp.gmail.com
-
 smtp_port: 587
-
 sender_email: monitoring@example.com
-
 receiver_email: admin@example.com
 
 ```
 
-For Gmail:
-
-* Enable App Password
-* Use App Password instead of account password
+> **Note for Gmail Users:** You must enable an App Password and use it instead of your standard account password.
 
 ---
 
-# ▶️ Running the Project
+## ▶️ Running the Project
 
-Execute the main playbook:
+Execute the main playbook to start the monitoring workflow:
 
 ```bash
 ansible-playbook playbook.yaml
+
 ```
+
+### 🔄 Playbook Execution Flow
+
+`playbook.yaml` controls the complete workflow. It seamlessly coordinates:
+
+1. **`collect_metrics.yaml`** ➔ Collects VM Information
+2. **`send_report.yaml`** ➔ Generates HTML Report & Sends Email Notification
 
 ---
 
-# 🔄 Playbook Execution Flow
+## 📊 Sample Monitoring Report
 
-## playbook.yaml
+> **VM Health Report**
+> **Hostname:** `web-01`
+> **CPU Usage:** 35%
+> **Memory Usage:** 60%
+> **Disk Usage:** 45%
+> **Uptime:** 15 days
+> **Status:** ✅ Healthy
 
-Controls the complete workflow.
+### 📧 Email Notification
 
-It executes:
-
-```
-collect_metrics.yaml
-        |
-        |
-Collect VM Information
-        |
-        |
-send_report.yaml
-        |
-        |
-Generate Email Report
-        |
-        |
-Send Notification
-
-```
+The project sends a formatted HTML email report using the Jinja2 template located at `templates/report_email_animated.html.j2`. It highlights the system health status, resource utilization, and uptime.
 
 ---
 
-# 📊 Sample Monitoring Report
+## ⏰ Scheduling Monitoring
 
-```
-VM Health Report
-
-
-Hostname:
-web-01
-
-
-CPU Usage:
-35%
-
-
-Memory Usage:
-60%
-
-
-Disk Usage:
-45%
-
-
-Uptime:
-15 days
-
-
-Status:
-Healthy
-
-```
-
----
-
-# 📧 Email Notification
-
-The project sends an HTML formatted email report.
-
-Email contains:
-
-* VM hostname
-* CPU usage
-* Memory utilization
-* Disk usage
-* System health status
-
-Template:
-
-```
-templates/report_email_animated.html.j2
-```
-
----
-
-# ⏰ Scheduling Monitoring
-
-Using Cron:
+To automate the monitoring process, schedule the playbook using Cron:
 
 ```bash
 crontab -e
+
 ```
 
-Example:
-
-Run every hour:
+*Example: Run the playbook every hour:*
 
 ```bash
-0 * * * * ansible-playbook playbook.yaml
+0 * * * * /path/to/ansible-env/bin/ansible-playbook /path/to/Ansible-VM-Monitor/playbook.yaml
+
 ```
 
 ---
 
-# 🧪 Troubleshooting
+## 🧪 Troubleshooting
 
-## Ansible Host Unreachable
+### Ansible Host Unreachable
 
-Check:
+Test connectivity:
 
 ```bash
 ansible all -m ping
+
 ```
 
-Verify:
+* **Verify:** SSH key permissions (`chmod 400`), AWS Security Group inbound rules (Port 22), instance public IP, and the correct SSH username (e.g., `ubuntu`, `ec2-user`).
 
-* SSH key
-* Security group rules
-* Instance IP
-* Username
+### AWS Inventory Not Showing Instances
 
----
-
-## AWS Inventory Not Showing Instances
-
-Check:
+Test dynamic inventory:
 
 ```bash
-ansible-inventory \
--i inventory/aws_ec2.yaml \
---graph
+ansible-inventory -i inventory/aws_ec2.yaml --graph
+
 ```
 
-Verify:
+* **Verify:** AWS CLI credentials (`aws configure`), correct region in `aws_ec2.yaml`, and that your EC2 tags match the filters exactly.
 
-* AWS credentials
-* Region
-* EC2 tags
+### Email Not Received
 
----
-
-## Email Not Received
-
-Verify:
-
-* SMTP configuration
-* Email credentials
-* App password
-* SMTP port
+* **Verify:** SMTP server and port settings, sender/receiver email addresses, and ensure you are using a valid **App Password** (for Gmail/O365) rather than a standard password.
 
 ---
 
-# 🚀 Future Enhancements
+## 🚀 Future Enhancements
 
-* Slack notifications
-* Microsoft Teams alerts
-* Prometheus integration
-* Grafana dashboard
-* Alert thresholds
-* Auto remediation
-* Kubernetes node monitoring
+* [ ] Slack & Microsoft Teams alerts integration
+* [ ] Prometheus metrics exposure
+* [ ] Grafana dashboard visualization
+* [ ] Custom alert thresholds
+* [ ] Auto-remediation tasks
+* [ ] Kubernetes node monitoring
 
 ---
 
-# 📌 Repository
+## 📌 Repository
 
-GitHub:
-
-[https://github.com/Akash-M21/Ansible-VM-Monitor](https://github.com/Akash-M21/Ansible-VM-Monitor)
+**GitHub:** [Ansible-VM-Monitor](https://github.com/Akash-M21/Ansible-VM-Monitor)
