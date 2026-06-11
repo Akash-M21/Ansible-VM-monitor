@@ -68,8 +68,6 @@ The collected information is converted into an HTML report and delivered through
 ```
 
 ```
-
-
 # ✨ Features
 
 ✅ AWS EC2 Dynamic Inventory  
@@ -89,7 +87,7 @@ The collected information is converted into an HTML report and delivered through
 # 🛠️ Technologies Used
 
 | Technology | Purpose |
-|---|---|
+|------------|---------|
 | Ansible | Automation and configuration management |
 | AWS EC2 | Virtual machines |
 | AWS CLI | AWS resource management |
@@ -97,7 +95,11 @@ The collected information is converted into an HTML report and delivered through
 | Python boto3 | AWS API communication |
 | SSH | Remote server access |
 | SMTP | Email notification |
-| YAML | Configuration |
+| YAML | Configuration management |
+
+---
+
+
 
 ---
 ```
