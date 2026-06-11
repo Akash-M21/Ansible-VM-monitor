@@ -1,11 +1,11 @@
 ```markdown
-```
 # 📊 Ansible VM Monitor with Email Notification
 
 An automated **VM health monitoring solution** built using **Ansible, AWS Dynamic Inventory, and Email Notification**.
 
 This project dynamically discovers AWS EC2 instances using tags, collects server health metrics, generates an HTML-based monitoring report, and sends the report through email notifications.
 
+```
 ---
 ```
 ## 📑 Table of Contents
