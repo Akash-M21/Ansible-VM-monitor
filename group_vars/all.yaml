@@ -1,0 +1,7 @@
+smtp_server: "smtp.gmail.com"
+smtp_port: 587
+email_user: "akasham2105@gmail.com"
+email_pass: "lgjf svbd lxdd tnbd"
+alert_recipient: 
+  - "akashhm08@gmail.com"
+
