@@ -80,10 +80,11 @@ The collected information is converted into an HTML report and delivered through
 ✅ Uptime monitoring  
 ✅ HTML email report generation  
 ✅ Automated email notifications  
-✅ Easy configuration using Ansible variables  
+✅ Easy configuration using Ansible variables
 
----
+```
 
+```
 # 🛠️ Technologies Used
 
 | Technology | Purpose |
@@ -97,11 +98,10 @@ The collected information is converted into an HTML report and delivered through
 | SMTP | Email notification |
 | YAML | Configuration management |
 
----
+```
 
 
 
----
 ```
 
 # 📂 Project Structure
