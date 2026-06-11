@@ -36,8 +36,9 @@ Monitoring VM health is an important part of infrastructure operations. This pro
 The collected information is converted into a structured HTML report and delivered through email.
 
 ---
-```
+
 ## 🏗️ Architecture
+
 
 ```text
                  AWS EC2 Instances
