@@ -128,6 +128,7 @@ Ansible-VM-Monitor/
 ```
 ### Step 1: Update System
 
+```
 ```bash
 sudo apt update && sudo apt upgrade -y
 
