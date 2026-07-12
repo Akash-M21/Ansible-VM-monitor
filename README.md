@@ -209,7 +209,7 @@ Provide your:
 
 ---
 
-# 🏷️ Step 4: Tag AWS EC2 Instances
+### Step 4: Tag AWS EC2 Instances
 
 To make EC2 instances easier to identify, this project automatically assigns sequential **Name** tags (`web-01`, `web-02`, `web-03`, ...).
 
@@ -265,7 +265,7 @@ Tagging i-0fedcba9876543210 as web-03
 
 ---
 
-# 🔑 Step 5: Copy SSH Public Key to EC2 Instances
+### 🔑 Step 5: Copy SSH Public Key to EC2 Instances
 
 Before Ansible can communicate with the EC2 instances without prompting for authentication, copy your local SSH public key to all discovered instances.
 
@@ -275,7 +275,7 @@ Create a file named **`copy_pubkey.sh`**.
 #!/bin/bash
 
 # Define variables
-PEM_FILE="DevOps-Shack.pem"
+PEM_FILE="DevOps.pem"
 PUB_KEY=$(cat ~/.ssh/id_rsa.pub)
 USER="ubuntu"      # Change to ec2-user for Amazon Linux
 INVENTORY_FILE="inventory/aws_ec2.yaml"
@@ -337,7 +337,7 @@ Edit the file at `inventory/aws_ec2.yaml`:
 plugin: amazon.aws.aws_ec2
 
 regions:
-  - ap-south-1
+  - us-east-1
 
 filters:
   tag:Environment: dev
