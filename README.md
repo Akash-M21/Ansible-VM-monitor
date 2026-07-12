@@ -122,8 +122,6 @@ Ansible-VM-Monitor/
 └── README.md
 ```
 
-```
-
 ---
 
 ## ⚙️ Setup Instructions
