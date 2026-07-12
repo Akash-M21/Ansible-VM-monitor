@@ -122,10 +122,10 @@ Ansible-VM-Monitor/
 └── README.md
 ```
 
----
 
 ## ⚙️ Setup Instructions
 
+```
 ### Step 1: Update System
 
 ```bash
