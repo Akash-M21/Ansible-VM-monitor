@@ -111,11 +111,16 @@ Ansible-VM-Monitor/
 ├── templates/
 │   └── report_email_animated.html.j2
 │
+├── scripts/
+│   ├── tag_instances.sh
+│   └── copy_pubkey.sh
+│
 ├── ansible.cfg
 ├── collect_metrics.yaml
 ├── playbook.yaml
 ├── send_report.yaml
 └── README.md
+```
 
 ```
 
@@ -204,7 +209,117 @@ Provide your:
 * `AWS Region`
 * `Output Format`
 
-### Step 4: Configure EC2 Tags
+---
+
+# 🏷️ Step 4: Tag AWS EC2 Instances
+
+To make EC2 instances easier to identify, this project automatically assigns sequential **Name** tags (`web-01`, `web-02`, `web-03`, ...).
+
+Create a file named **`tag_instances.sh`**.
+
+```bash
+#!/bin/bash
+
+# Fetch instance IDs that match Environment=dev
+instance_ids=$(aws ec2 describe-instances \
+  --filters "Name=tag:Environment,Values=dev" \
+            "Name=instance-state-name,Values=running" \
+  --query 'Reservations[*].Instances[*].InstanceId' \
+  --output text)
+
+# Sort instance IDs deterministically
+sorted_ids=($(echo "$instance_ids" | tr '\t' '\n' | sort))
+
+# Rename instances sequentially
+counter=1
+
+for id in "${sorted_ids[@]}"; do
+  name="web-$(printf "%02d" $counter)"
+  echo "Tagging $id as $name"
+
+  aws ec2 create-tags \
+    --resources "$id" \
+    --tags Key=Name,Value="$name"
+
+  ((counter++))
+done
+```
+
+Make the script executable:
+
+```bash
+chmod +x tag_instances.sh
+```
+
+Run the script:
+
+```bash
+./tag_instances.sh
+```
+
+Example output:
+
+```text
+Tagging i-0ab12345cd6789ef0 as web-01
+Tagging i-0123456789abcdef0 as web-02
+Tagging i-0fedcba9876543210 as web-03
+```
+
+---
+
+# 🔑 Step 5: Copy SSH Public Key to EC2 Instances
+
+Before Ansible can communicate with the EC2 instances without prompting for authentication, copy your local SSH public key to all discovered instances.
+
+Create a file named **`copy_pubkey.sh`**.
+
+```bash
+#!/bin/bash
+
+# Define variables
+PEM_FILE="DevOps-Shack.pem"
+PUB_KEY=$(cat ~/.ssh/id_rsa.pub)
+USER="ubuntu"      # Change to ec2-user for Amazon Linux
+INVENTORY_FILE="inventory/aws_ec2.yaml"
+
+# Extract hosts from Ansible Dynamic Inventory
+HOSTS=$(ansible-inventory -i $INVENTORY_FILE --list | jq -r '._meta.hostvars | keys[]')
+
+# Copy SSH public key to each instance
+for HOST in $HOSTS; do
+
+    echo "Injecting SSH key into $HOST"
+
+    ssh \
+      -o StrictHostKeyChecking=no \
+      -i $PEM_FILE \
+      $USER@$HOST "
+        mkdir -p ~/.ssh &&
+        echo \"$PUB_KEY\" >> ~/.ssh/authorized_keys &&
+        chmod 700 ~/.ssh &&
+        chmod 600 ~/.ssh/authorized_keys
+      "
+
+done
+```
+
+Make the script executable:
+
+```bash
+chmod +x copy_pubkey.sh
+```
+
+Execute the script:
+
+```bash
+./copy_pubkey.sh
+```
+
+After successful execution, Ansible can connect to all EC2 instances using SSH without manually copying keys to each server.
+
+---
+
+### Step 6: Configure EC2 Tags
 
 The project uses AWS tags for dynamic discovery.
 **Example:**
@@ -216,7 +331,7 @@ Environment = dev
 
 Only running EC2 instances with this tag will be monitored.
 
-### Step 5: Configure Ansible Inventory
+### Step 7: Configure Ansible Inventory
 
 Edit the file at `inventory/aws_ec2.yaml`:
 
@@ -241,7 +356,7 @@ keyed_groups:
 
 ```
 
-### Step 6: Configure Ansible
+### Step 8: Configure Ansible
 
 Edit the file at `ansible.cfg`:
 
@@ -255,7 +370,7 @@ ssh_args = -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
 
 ```
 
-### Step 7: Create Python Environment
+### Step 9: Create Python Environment
 
 Install venv:
 
@@ -285,14 +400,14 @@ pip install boto3 botocore docker
 
 ```
 
-### Step 8: Install AWS Ansible Collection
+### Step 10: Install AWS Ansible Collection
 
 ```bash
 ansible-galaxy collection install amazon.aws
 
 ```
 
-### Step 9: Verify Dynamic Inventory
+### Step 11: Verify Dynamic Inventory
 
 Run:
 
@@ -311,7 +426,7 @@ ansible-inventory -i inventory/aws_ec2.yaml --graph
 
 ```
 
-### Step 10: Configure SSH Access
+### Step 12: Configure SSH Access
 
 Ensure the Ansible Control Node can connect to the EC2 instances.
 Test:
@@ -328,7 +443,7 @@ chmod 400 key.pem
 
 ```
 
-### Step 11: Configure Email Variables
+### Step 13: Configure Email Variables
 
 Update `group_vars/all.yaml`:
 
